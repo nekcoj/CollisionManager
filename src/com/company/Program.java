@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Program {
-
     Scanner scan = new Scanner(System.in);
     List<Shape> shapes = new ArrayList<>();
+    int rounds = 2;
 
-    public void run(){
+    public void run() {
         show();
     }
 
@@ -22,6 +22,7 @@ public class Program {
                     "4. Restart\n" +
                     "5. Play\n" +
                     "6. Set board size\n" +
+                    "7. Clear shapelist\n" +
                     "9. Show shapelist\n" +
                     "0. Exit");
             System.out.print("Enter choice> ");
@@ -48,6 +49,9 @@ public class Program {
                 case 6:
                     changeBoardSize();
                     break;
+                case 7:
+                    shapes.clear();
+                    break;
                 case 9:
                     printShapeList();
                     break;
@@ -57,23 +61,33 @@ public class Program {
                 default:
                     throw new IllegalStateException("Unexpected value: " + menuChoice);
             }
-        }while(!exit);
+        } while (!exit);
     }
 
     private void changeBoardSize() {
         System.out.printf("Default board size is 100x100.\nCurrent board size: %sx%s.\nEnter new board size or 0 to return to main menu> "
                 , Shape.sizeX, Shape.sizeY);
         int boardSize = scan.nextInt();
-        if(boardSize == 0) return;
-        else {
+        if (!(boardSize == 0))
             Shape.setBoardSize(boardSize);
+    }
+    private void printShapeList() {
+        for (Shape shape : shapes) {
+            System.out.println(shape.toString());
         }
     }
 
     private void play() {
-        for(int i = 0; i < 2; i++){
-            //checkOverlap();
-
+        if (!shapes.isEmpty()) {
+            for (int round = 1; round <= rounds; round++) {
+                for (int i = 0; i < shapes.size(); i++) {
+                    for (int j = i + 1; j < shapes.size(); j++) {
+                        collisionCheck(shapes.get(i), shapes.get(j));
+                    }
+                }
+                System.out.println("-------\nEnd of round: " + round + "\n-------\n");
+                repositionShapes();
+            }
         }
     }
 
@@ -83,34 +97,44 @@ public class Program {
         }
     }
 
-    private void printShapeList() {
-        for (Shape shape : shapes) {
-            System.out.println(shape.toString());
-        }
-    }
-
     private void createDot() {
         int numberOfDots = scan.nextInt();
-        for(int i = 0; i < numberOfDots; i++){
+        for (int i = 0; i < numberOfDots; i++) {
             shapes.add(new Dot());
         }
     }
 
     private void createCircle() {
         int numberOfCircles = scan.nextInt();
-        for(int i = 0; i < numberOfCircles; i++){
+        for (int i = 0; i < numberOfCircles; i++) {
             shapes.add(new Circle());
         }
     }
 
     private void createSquare() {
         int numberOfSquares = scan.nextInt();
-        for(int i = 0; i < numberOfSquares; i++){
+        for (int i = 0; i < numberOfSquares; i++) {
             shapes.add(new Square());
         }
     }
 
-    private void checkForCollisions(){
-        shapes.forEach(s -> Shape.checkCollisions(shapes));
+    private void collisionCheck(Shape s1, Shape s2) {
+        var collision = false;
+        var getClassShape1 = s1.getClass().getName().replaceAll("com.company.", "");
+        var getClassShape2 = s2.getClass().getName().replaceAll("com.company.", "");
+
+        if (s1 instanceof Circle) {
+            if (Circle.checkCollisions((Circle) s1, s2)) collision = true;
+        }
+        if (s1 instanceof Square) {
+            if (Square.checkCollisions((Square) s1, s2)) collision = true;
+        }
+        if (s1 instanceof Dot) {
+            if (Dot.checkCollisions((Dot) s1, s2)) collision = true;
+        }
+
+        if (collision) {
+            System.out.printf("Collision detected! %s on %s!\n" + s1.toString() + s2.toString(), getClassShape1, getClassShape2);
+        }
     }
 }
