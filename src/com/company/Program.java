@@ -73,7 +73,7 @@ public class Program {
     }
     private void printShapeList() {
         for (Shape shape : shapes) {
-            System.out.println(shape.toString());
+            System.out.print(shape.toString());
         }
     }
 
