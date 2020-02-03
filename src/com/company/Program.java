@@ -22,8 +22,8 @@ public class Program {
                     "4. Restart\n" +
                     "5. Play\n" +
                     "6. Set board size\n" +
-                    "7. Clear shapelist\n" +
-                    "9. Show shapelist\n" +
+                    "7. Clear shape list\n" +
+                    "9. Show shape list\n" +
                     "0. Exit");
             System.out.print("Enter choice> ");
             int menuChoice = scan.nextInt();
@@ -120,8 +120,6 @@ public class Program {
 
     private void collisionCheck(Shape s1, Shape s2) {
         var collision = false;
-        var getClassShape1 = s1.getClass().getName().replaceAll("com.company.", "");
-        var getClassShape2 = s2.getClass().getName().replaceAll("com.company.", "");
 
         if (s1 instanceof Circle) {
             if (Circle.checkCollisions((Circle) s1, s2)) collision = true;
@@ -134,7 +132,8 @@ public class Program {
         }
 
         if (collision) {
-            System.out.printf("Collision detected! %s on %s!\n" + s1.toString() + s2.toString(), getClassShape1, getClassShape2);
+            System.out.printf("Collision detected! %s on %s!\n" + s1.toString() + s2.toString(),
+                    s1.getClass().getSimpleName(), s2.getClass().getSimpleName());
         }
     }
 }
