@@ -9,7 +9,6 @@ public class Square extends Shape {
         this.y = super.y;
         this.radius = super.radius;
         System.out.print(toString());
-
     }
 
     public float getX() {
